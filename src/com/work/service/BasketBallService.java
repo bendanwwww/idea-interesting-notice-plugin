@@ -27,6 +27,10 @@ public class BasketBallService {
         return resultObj.getList();
     }
 
+    public static String getGameLiveText(String url) {
+        return url;
+    }
+
     public static void main(String[] args) {
         System.out.println(JSONObject.toJSON(getGameList()));
     }

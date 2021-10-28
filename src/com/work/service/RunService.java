@@ -1,12 +1,11 @@
 package com.work.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import com.work.entity.BasketBallEntity;
-import com.work.vo.BallActionVO;
-import com.work.vo.GamesVO;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationDisplayType;
+import com.intellij.notification.NotificationGroup;
+import com.intellij.notification.Notifications;
+import com.intellij.openapi.ui.MessageType;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,32 +19,32 @@ public class RunService {
 
     private static final Logger log = LoggerFactory.getLogger(RunService.class);
 
-    private static Map<String, BasketBallEntity> ballServiceMap;
+    private static NotificationGroup notificationGroup = new NotificationGroup(
+            "testid", NotificationDisplayType.BALLOON, false);
 
-    private static String runId;
+    private volatile static boolean isRun = false;
 
-    public static List<BallActionVO> init() {
-        List<BallActionVO> res = new ArrayList<>();
-        // 查询当前赛程链接
-        List<GamesVO.Game> gameList = BasketBallService.getGameList();
-        // 构造BasketBallService
-        for (GamesVO.Game game : gameList) {
-            if ("basketball".equals(game.getType())) {
-                String title = game.getVisit_team() + " vs " + game.getHome_team();
-                ballServiceMap.put(game.getId(), new BasketBallEntity(game.getId(), title, game.getUrl()));
-                res.add(new BallActionVO(game.getId(), title));
-            }
+    public synchronized static void run() {
+        if (!isRun) {
+            new Thread(RunService :: runAction).run();
+            isRun = true;
         }
-        return res;
     }
 
-    public static void run(String id) {
-//        if (runId == id) {
-//            return;
-//        }
-//        runId = id;
-        // 查询ballServiceMap
-        // 终止正在运行的线程
-        // 执行新线程
+    private static void runAction() {
+        while (true) {
+            String runId = GlobalContext.getRunId();
+            if (StringUtils.isEmpty(runId)) {
+                try {
+                    Thread.sleep(1000);
+                    continue;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            String text = BasketBallService.getGameLiveText(GlobalContext.getUrlByRunId(runId));
+            Notification notification = notificationGroup.createNotification(text, MessageType.INFO);
+            Notifications.Bus.notify(notification);
+        }
     }
 }
