@@ -1,10 +1,9 @@
 package com.work.service;
 
-import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationDisplayType;
 import com.intellij.notification.NotificationGroup;
-import com.intellij.notification.Notifications;
-import com.intellij.openapi.ui.MessageType;
+import com.intellij.notification.NotificationType;
+import com.intellij.openapi.project.Project;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,32 +18,48 @@ public class RunService {
 
     private static final Logger log = LoggerFactory.getLogger(RunService.class);
 
-    private static NotificationGroup notificationGroup = new NotificationGroup(
-            "testid", NotificationDisplayType.BALLOON, false);
-
     private volatile static boolean isRun = false;
 
-    public synchronized static void run() {
+    private volatile static boolean needRun = false;
+
+    private static NotificationGroup notify =
+            new NotificationGroup("game.notify", NotificationDisplayType.BALLOON, true);
+
+    public synchronized static void run(Project project) {
         if (!isRun) {
-            new Thread(RunService :: runAction).run();
+            needRun = true;
             isRun = true;
+            new Thread(() -> runAction(project)).start();
         }
     }
 
-    private static void runAction() {
-        while (true) {
+    public static void stop() {
+        if (isRun) {
+            needRun = false;
+            isRun = false;
+        }
+    }
+
+    public static void runAction(Project project) {
+        while (needRun) {
             String runId = GlobalContext.getRunId();
             if (StringUtils.isEmpty(runId)) {
-                try {
-                    Thread.sleep(1000);
-                    continue;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                continue;
             }
-            String text = BasketBallService.getGameLiveText(GlobalContext.getUrlByRunId(runId));
-            Notification notification = notificationGroup.createNotification(text, MessageType.INFO);
-            Notifications.Bus.notify(notification);
+            String text = "";
+            try {
+                text = BasketBallService.getGameLiveText(runId);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (StringUtils.isNotEmpty(text)) {
+                notify.createNotification(text, NotificationType.INFORMATION).notify(project);
+            }
+            try {
+                Thread.sleep(3000);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

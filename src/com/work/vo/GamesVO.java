@@ -190,5 +190,27 @@ public class GamesVO {
         public void setHeader(String[] header) {
             this.header = header;
         }
+
+//        @Override
+//        public boolean equals(Object o) {
+//            if (!(o instanceof Game)) {
+//                return false;
+//            }
+//            Game equalsGame = (Game) o;
+//            if (this.id.equals(equalsGame.getId())
+//                    || (this.home_team.equals(equalsGame.getHome_team()) && this.visit_team.equals(equalsGame.getVisit_team()))) {
+//                return true;
+//            }
+//            return super.equals(o);
+//        }
+//
+//        @Override
+//        public int hashCode() {
+//            Game hashGame = new Game();
+//            hashGame.setId(this.id);
+//            hashGame.setHome_team(this.home_team);
+//            hashGame.setVisit_team(this.visit_team);
+//            return hashGame.hashCode();
+//        }
     }
 }

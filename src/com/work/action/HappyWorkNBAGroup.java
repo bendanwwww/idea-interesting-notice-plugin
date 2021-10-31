@@ -8,6 +8,7 @@ import com.work.service.GlobalContext;
 import com.work.service.RunService;
 import com.work.vo.GamesVO;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import com.intellij.openapi.actionSystem.AnAction;
@@ -36,9 +37,13 @@ public class HappyWorkNBAGroup extends AnAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
         // 启动线程
-        RunService.run();
+        RunService.run(event.getProject());
         // 获取本日比赛
         List<GamesVO.Game> gameList = BasketBallService.getGameList();
+        if (CollectionUtils.isNotEmpty(gameList)) {
+            // 取出篮球且存在直播的比赛
+            gameList = gameList.stream().filter(g -> g.getFrom().equals("live.dc") && g.getType().equals("basketball")).collect(Collectors.toList());
+        }
         Map<String, String> gameTitleMap = new HashMap<>();
         List<String> gameTitle = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(gameList)) {
@@ -47,8 +52,11 @@ public class HappyWorkNBAGroup extends AnAction {
                     .collect(Collectors.toMap(GamesVO.Game :: getId, GamesVO.Game :: getUrl));
             GlobalContext.setAllUrl(runUrlMap);
             // 生成列表
-            Map<String, String> gameTitleMapTmp = gameList.stream()
-                    .collect(Collectors.toMap(g -> g.getHome_team() + "vs" + g.getVisit_team(), GamesVO.Game :: getId));
+            Map<String, String> gameTitleMapTmp = new HashMap<>();
+            for (GamesVO.Game g : gameList) {
+                String title = g.getHome_team() + "vs" + g.getVisit_team();
+                gameTitleMapTmp.put(title, g.getId());
+            }
             gameTitleMap.putAll(gameTitleMapTmp);
             gameTitle.addAll(gameTitleMap.keySet());
             gameTitle.add(CLOSE_TASK);
@@ -60,10 +68,16 @@ public class HappyWorkNBAGroup extends AnAction {
                 .createListPopup(new BaseListPopupStep<String>(POPUP_TITLE, gameTitle) {
             @Override
             public PopupStep onChosen(String selectedValue, boolean finalChoice) {
+                // 关闭线程
+                if (selectedValue.equals(CLOSE_TASK)) {
+                    RunService.stop();
+                }
                 // 获取内容id
                 String id = gameTitleMap.get(selectedValue);
-                // 插入全局上下文中
-                GlobalContext.setRunId(id);
+                if (StringUtils.isNotEmpty(id)) {
+                    // 插入全局上下文中
+                    GlobalContext.setRunId(id);
+                }
                 return super.onChosen(selectedValue, finalChoice);
             }
         });

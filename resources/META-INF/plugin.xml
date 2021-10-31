@@ -27,6 +27,7 @@
 
   <!-- 声明该插件对IDEA core或其他插件的扩展 -->
   <extensions defaultExtensionNs="com.intellij">
+<!--    <notificationGroup id="gameText" displayType="BALLOON" key="happyWork"/>-->
   </extensions>
 
   <!-- 编写插件动作 -->
