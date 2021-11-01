@@ -27,7 +27,7 @@ public enum ResultCode {
     /**
      * app success code
      */
-    APP_SUCCESS("0","成功"),
+    APP_SUCCESS("0", "成功"),
 
     /**
      * 系统异常
@@ -235,7 +235,7 @@ public enum ResultCode {
 
     static {
         for (ResultCode resultCode : ResultCode.values()) {
-            resultCodeMap2Code.put(resultCode.code,resultCode);
+            resultCodeMap2Code.put(resultCode.code, resultCode);
         }
     }
 
@@ -269,8 +269,8 @@ public enum ResultCode {
         this.message = message;
     }
 
-    public static ResultCode getResultCodeByCode(String code){
-        return resultCodeMap2Code.getOrDefault(code,null);
+    public static ResultCode getResultCodeByCode(String code) {
+        return resultCodeMap2Code.getOrDefault(code, null);
     }
 
 }

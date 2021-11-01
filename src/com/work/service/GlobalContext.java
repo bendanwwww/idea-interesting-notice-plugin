@@ -22,7 +22,7 @@ public class GlobalContext {
     private static Lock readLock = lock.readLock();
     private static Lock writeLock = lock.writeLock();
 
-    private GlobalContext() {}
+    private GlobalContext() { }
 
     public static String getRunId() {
         try {

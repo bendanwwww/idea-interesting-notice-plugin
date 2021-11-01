@@ -2,15 +2,15 @@ package com.work.service;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.intellij.notification.NotificationDisplayType;
 import com.intellij.notification.NotificationGroup;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.project.Project;
 import com.work.vo.GameLiveVO;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 执行线程
@@ -22,14 +22,16 @@ public class RunService {
 
     private static final Logger log = LoggerFactory.getLogger(RunService.class);
 
-    private volatile static boolean isRun = false;
+    private static volatile boolean isRun = false;
 
-    private volatile static boolean needRun = false;
+    private static volatile boolean needRun = false;
+
+    private static final int ACTION_SLEEP_TIME = 5000;
 
     private static NotificationGroup notify =
             new NotificationGroup("game.notify", NotificationDisplayType.BALLOON, true);
 
-    public synchronized static void run(Project project) {
+    public static synchronized void run(Project project) {
         if (!isRun) {
             needRun = true;
             isRun = true;
@@ -80,7 +82,7 @@ public class RunService {
                 notify.createNotification(text, NotificationType.INFORMATION).notify(project);
             }
             try {
-                Thread.sleep(5000);
+                Thread.sleep(ACTION_SLEEP_TIME);
             } catch (Exception e) {
                 e.printStackTrace();
             }

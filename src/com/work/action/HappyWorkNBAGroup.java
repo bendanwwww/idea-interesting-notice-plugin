@@ -1,24 +1,28 @@
 package com.work.action;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
+
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.ui.popup.*;
+import com.intellij.openapi.ui.popup.ListPopup;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
+import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
 import com.work.service.BasketBallService;
 import com.work.service.GlobalContext;
 import com.work.service.RunService;
 import com.work.vo.GamesVO;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
-
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+
 
 /**
  * 自动生成子菜单

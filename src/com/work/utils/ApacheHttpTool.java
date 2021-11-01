@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLHandshakeException;
 
@@ -69,7 +68,7 @@ public class ApacheHttpTool {
     private static final int CONN_MANAGER_TIMEOUT = 500;
 
     /** 调用失败重试次数 */
-    private static final int count = 1;
+    private static final int COUNT = 1;
 
     /** 默认连接池参数 */
     // 连接池最大连接数
@@ -145,7 +144,7 @@ public class ApacheHttpTool {
 
         // 构造消息头
         List<String> headerKey = new ArrayList<String>(headers.keySet());
-        for(String key : headerKey){
+        for(String key : headerKey) {
             get.setHeader(key, headers.get(key));
         }
 
@@ -165,7 +164,7 @@ public class ApacheHttpTool {
             return result;
         } catch (Exception e) {
             throw new ResultException(e.getMessage());
-        }finally{
+        }finally {
             if(get != null) {
                 get.releaseConnection();
             }
@@ -375,7 +374,7 @@ public class ApacheHttpTool {
 
         @Override
         public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
-            if (executionCount > count) { // 超过重试次数，就放弃
+            if (executionCount > COUNT) { // 超过重试次数，就放弃
                 return false;
             }
             if (exception instanceof NoHttpResponseException) {// 没有响应, 重试
