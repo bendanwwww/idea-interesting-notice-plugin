@@ -2,6 +2,7 @@ package com.work.service;
 
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,20 +59,19 @@ public class RunService {
                 String gameLiveId = BasketBallService.getGameLiveNumber(runId);
                 if (StringUtils.isNotEmpty(gameLiveId) && !gameLiveId.equals(lastGameLiveId)) {
                     List<GameLiveVO> liveList = BasketBallService.getGameLiveText(runId, gameLiveId);
-                    for (GameLiveVO gameLive : liveList) {
+                    if (CollectionUtils.isNotEmpty(liveList)) {
                         textBuffer.append("[");
-                        textBuffer.append(gameLive.getPid_text());
+                        textBuffer.append(liveList.get(0).getPid_text());
                         textBuffer.append("]");
                         textBuffer.append(" ");
-                        textBuffer.append(gameLive.getLive_text());
-                        textBuffer.append(" ");
-                        textBuffer.append(gameLive.getHome_score());
+                        for (GameLiveVO gameLive : liveList) {
+                            textBuffer.append(gameLive.getLive_text());
+                            textBuffer.append(" ");
+                        }
+                        textBuffer.append(liveList.get(0).getHome_score());
                         textBuffer.append(" - ");
-                        textBuffer.append(gameLive.getVisit_score());
-                        textBuffer.append("   ");
-                        textBuffer.append("\r\n");
+                        textBuffer.append(liveList.get(0).getVisit_score());
                     }
-
                     lastGameLiveId = gameLiveId;
                 }
             } catch (Exception e) {
