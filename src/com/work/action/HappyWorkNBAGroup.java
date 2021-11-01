@@ -42,7 +42,10 @@ public class HappyWorkNBAGroup extends AnAction {
         List<GamesVO.Game> gameList = BasketBallService.getGameList();
         if (CollectionUtils.isNotEmpty(gameList)) {
             // 取出篮球且存在直播的比赛
-            gameList = gameList.stream().filter(g -> g.getFrom().equals("live.dc") && g.getType().equals("basketball")).collect(Collectors.toList());
+            gameList = gameList.stream()
+                    .filter(g -> (g.getFrom().equals("live.dc") || g.getFrom().equals("live.live") || g.getFrom().equals("dc.live"))
+                            && g.getType().equals("basketball"))
+                    .collect(Collectors.toList());
         }
         Map<String, String> gameTitleMap = new HashMap<>();
         List<String> gameTitle = new ArrayList<>();
@@ -59,10 +62,10 @@ public class HappyWorkNBAGroup extends AnAction {
             }
             gameTitleMap.putAll(gameTitleMapTmp);
             gameTitle.addAll(gameTitleMap.keySet());
-            gameTitle.add(CLOSE_TASK);
         } else {
             gameTitle.add(NO_GAME_TITLE);
         }
+        gameTitle.add(CLOSE_TASK);
         // 初始化菜单
         ListPopup listPopup = JBPopupFactory.getInstance()
                 .createListPopup(new BaseListPopupStep<String>(POPUP_TITLE, gameTitle) {

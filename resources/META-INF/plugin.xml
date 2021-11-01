@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.socket.basketball.plugin</id>
   <name>basketball</name>
-  <version>1.0.1</version>
+  <version>1.1.0</version>
   <vendor email="461806307@qq.com">lsy</vendor>
 
   <!-- 插件的描述 （不能使用默认值，必须修改成自己的。并且需要大于40个字符）-->
@@ -32,7 +32,7 @@
 
   <!-- 编写插件动作 -->
   <actions>
-    <group id="happyWork" text="开心搬砖工具" popup="true" description="为提升工作效率而生的插件">
+    <group id="happyWork" text="研发工具" popup="true" description="为提升工作效率而生的插件">
       <add-to-group group-id="MainMenu" anchor="last"/>
       <action id="NBAAction" class="com.work.action.HappyWorkNBAGroup" text="直播" />
     </group>

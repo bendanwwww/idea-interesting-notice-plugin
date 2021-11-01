@@ -37,14 +37,17 @@ public class BasketBallService {
         return resultObj.getList();
     }
 
-    public static String getGameLiveText(String id) {
+    public static String getGameLiveNumber(String id) {
         // 获取当前比赛直播id
         String liveUrl = MessageFormat.format(GAME_LIVE_NUMBER_URL, id);
         ApacheHttpTool.Result liveResult = ApacheHttpTool.httpGet(liveUrl, new HashMap<>(), new HashMap<>());
         if (!liveResult.isOk()) {
             return null;
         }
-        String gameLiveId = liveResult.getBody();
+        return liveResult.getBody();
+    }
+
+    public static List<GameLiveVO> getGameLiveText(String id, String gameLiveId) {
         // 获取比赛直播文案
         String liveTextUrl = MessageFormat.format(GAME_LIVE_TEXT_URL, id, gameLiveId);
         Map<String, String> header = new HashMap<>();
@@ -64,12 +67,7 @@ public class BasketBallService {
         if (!liveTextResult.isOk()) {
             return null;
         }
-        List<GameLiveVO> gameLiveList = JSON.parseObject(liveTextResult.getBody(), new TypeReference<List<GameLiveVO>>() {});
-        String res = "";
-        for (GameLiveVO gameLive : gameLiveList) {
-            res += gameLive.getLive_text() + " " + gameLive.getHome_score() + "-" + gameLive.getVisit_score() + "\n";
-        }
-        return res;
+        return JSON.parseObject(liveTextResult.getBody(), new TypeReference<List<GameLiveVO>>() {});
     }
 
     public static void main(String[] args) {

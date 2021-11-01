@@ -1,9 +1,13 @@
 package com.work.service;
 
+import java.util.List;
+
 import com.intellij.notification.NotificationDisplayType;
 import com.intellij.notification.NotificationGroup;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.project.Project;
+import com.work.vo.GameLiveVO;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,22 +45,42 @@ public class RunService {
     }
 
     public static void runAction(Project project) {
+        String lastGameLiveId = null;
         while (needRun) {
             String runId = GlobalContext.getRunId();
             if (StringUtils.isEmpty(runId)) {
                 continue;
             }
-            String text = "";
+            StringBuffer textBuffer = new StringBuffer();
             try {
-                text = BasketBallService.getGameLiveText(runId);
+                String gameLiveId = BasketBallService.getGameLiveNumber(runId);
+                if (StringUtils.isNotEmpty(gameLiveId) && !gameLiveId.equals(lastGameLiveId)) {
+                    List<GameLiveVO> liveList = BasketBallService.getGameLiveText(runId, gameLiveId);
+                    for (GameLiveVO gameLive : liveList) {
+                        textBuffer.append("[");
+                        textBuffer.append(gameLive.getPid_text());
+                        textBuffer.append("]");
+                        textBuffer.append(" ");
+                        textBuffer.append(gameLive.getLive_text());
+                        textBuffer.append(" ");
+                        textBuffer.append(gameLive.getHome_score());
+                        textBuffer.append(" - ");
+                        textBuffer.append(gameLive.getVisit_score());
+                        textBuffer.append("   ");
+                        textBuffer.append("\r\n");
+                    }
+
+                    lastGameLiveId = gameLiveId;
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            String text = textBuffer.toString();
             if (StringUtils.isNotEmpty(text)) {
                 notify.createNotification(text, NotificationType.INFORMATION).notify(project);
             }
             try {
-                Thread.sleep(3000);
+                Thread.sleep(5000);
             } catch (Exception e) {
                 e.printStackTrace();
             }
