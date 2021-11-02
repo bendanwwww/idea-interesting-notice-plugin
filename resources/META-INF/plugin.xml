@@ -35,7 +35,7 @@
   <actions>
     <group id="happyWork" text="研发工具" popup="true" description="为提升工作效率而生的插件">
       <add-to-group group-id="MainMenu" anchor="last"/>
-      <action id="NBAAction" class="com.work.action.HappyWorkNBAGroup" text="篮球直播" />
+      <action id="NBAAction" class="com.work.action.BasketballAction" text="篮球直播" />
     </group>
   </actions>
 
