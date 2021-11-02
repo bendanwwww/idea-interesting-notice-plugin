@@ -29,13 +29,13 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
  * @author lsy <liushuoyang03@kuaishou.com>
  * Created on 2021-05-27
  */
-public class HappyWorkNBAGroup extends AnAction {
+public class BasketballAction extends ActionAbstract {
 
     private static final String POPUP_TITLE = "请选择一场比赛";
     private static final String NO_GAME_TITLE = "当前无比赛";
     private static final String CLOSE_TASK = "停止播放";
 
-    private static final Logger log = Logger.getInstance(HappyWorkNBAGroup.class);
+    private static final Logger log = Logger.getInstance(BasketballAction.class);
 
     private static GameRunService gameRunService;
 
