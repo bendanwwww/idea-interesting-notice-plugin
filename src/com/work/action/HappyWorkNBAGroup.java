@@ -14,15 +14,14 @@ import com.intellij.openapi.ui.popup.ListPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
-import com.work.service.BasketBallService;
-import com.work.service.GlobalContext;
-import com.work.service.RunService;
+import com.work.common.RunServiceFactory;
+import com.work.external.BasketBallService;
+import com.work.common.GlobalContext;
+import com.work.service.GameRunService;
 import com.work.vo.GamesVO;
 import org.apache.commons.collections.CollectionUtils;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-
-
 
 /**
  * 自动生成子菜单
@@ -38,10 +37,16 @@ public class HappyWorkNBAGroup extends AnAction {
 
     private static final Logger log = Logger.getInstance(HappyWorkNBAGroup.class);
 
+    private static GameRunService gameRunService;
+
+    static {
+        gameRunService = RunServiceFactory.getByClass(GameRunService.class);
+    }
+
     @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
         // 启动线程
-        RunService.run(event.getProject());
+        gameRunService.run(event.getProject());
         // 获取本日比赛
         List<GamesVO.Game> gameList = BasketBallService.getGameList();
         if (CollectionUtils.isNotEmpty(gameList)) {
@@ -77,7 +82,7 @@ public class HappyWorkNBAGroup extends AnAction {
             public PopupStep onChosen(String selectedValue, boolean finalChoice) {
                 // 关闭线程
                 if (selectedValue.equals(CLOSE_TASK)) {
-                    RunService.stop();
+                    gameRunService.stop();
                 }
                 // 获取内容id
                 String id = gameTitleMap.get(selectedValue);

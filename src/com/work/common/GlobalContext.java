@@ -1,4 +1,4 @@
-package com.work.service;
+package com.work.common;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;

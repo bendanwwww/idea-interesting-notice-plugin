@@ -1,4 +1,4 @@
-package com.work.service;
+package com.work.external;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
