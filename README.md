@@ -1,1 +1,1 @@
-# idea-basketball-plugin
+# idea-interesting-notice-plugin
