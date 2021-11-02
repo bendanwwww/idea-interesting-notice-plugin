@@ -61,6 +61,7 @@ public class GameRunService extends RunServiceAbstract {
                     lastGameLiveId = gameLiveId;
                 }
             } catch (Exception e) {
+                textBuffer.append("正在获取直播源, 若长时间未取到可能是本场比赛未开始或已结束～");
                 e.printStackTrace();
             }
             String text = textBuffer.toString();
