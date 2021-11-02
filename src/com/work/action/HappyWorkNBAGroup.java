@@ -59,10 +59,6 @@ public class HappyWorkNBAGroup extends AnAction {
         Map<String, String> gameTitleMap = new HashMap<>();
         List<String> gameTitle = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(gameList)) {
-            // 插入全局上下文中
-            Map<String, String> runUrlMap = gameList.stream()
-                    .collect(Collectors.toMap(GamesVO.Game :: getId, GamesVO.Game :: getUrl));
-            GlobalContext.setAllUrl(runUrlMap);
             // 生成列表
             Map<String, String> gameTitleMapTmp = new HashMap<>();
             for (GamesVO.Game g : gameList) {
