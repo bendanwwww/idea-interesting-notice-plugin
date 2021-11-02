@@ -20,7 +20,6 @@ import com.work.common.GlobalContext;
 import com.work.service.GameRunService;
 import com.work.vo.GamesVO;
 import org.apache.commons.collections.CollectionUtils;
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 
 /**
