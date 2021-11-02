@@ -26,10 +26,11 @@ public class RunServiceFactory {
         try {
             Constructor<T> constructor = clazz.getDeclaredConstructor();
             constructor.setAccessible(true);
-            T t = clazz.newInstance();
+            T t = constructor.newInstance();
             RUN_SERVICE_MAP.put(clazz, t);
             return t;
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ResultException(e.getMessage());
         }
     }
