@@ -36,7 +36,7 @@ public class GameRunService extends RunServiceAbstract {
     public void runAction(Project project) {
         String lastGameLiveId = null;
         while (isRun) {
-            String runId = GlobalContext.getRunId();
+            String runId = GlobalContext.getRunId(this.getClass());
             if (StringUtils.isEmpty(runId)) {
                 continue;
             }

@@ -1,9 +1,7 @@
 package com.work.action;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -79,7 +77,7 @@ public class BasketballAction extends ListPopupActionAbstract {
         String id = String.valueOf(POPUP_MAP.get(selectedValue));
         if (StringUtils.isNotEmpty(id)) {
             // 插入全局上下文中
-            GlobalContext.setRunId(id);
+            GlobalContext.resetRunId(GameRunService.class, id);
         }
     }
 }

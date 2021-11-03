@@ -1,5 +1,8 @@
 package com.work.common;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -13,7 +16,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class GlobalContext {
 
     /** 执行id */
-    private static volatile String runId;
+    private static volatile Map<Class, List<String>> runIdMap;
 
     private static ReadWriteLock lock = new ReentrantReadWriteLock();
     private static Lock readLock = lock.readLock();
@@ -21,10 +24,10 @@ public class GlobalContext {
 
     private GlobalContext() { }
 
-    public static String getRunId() {
+    public static List<String> getRunIds(Class clazz) {
         try {
             if (readLock.tryLock(10, TimeUnit.SECONDS)) {
-                return GlobalContext.runId;
+                return runIdMap.get(clazz);
             }
             return null;
         } catch (Exception e) {
@@ -34,11 +37,26 @@ public class GlobalContext {
         }
     }
 
-    public static void setRunId(String runId) {
+    public static String getRunId(Class clazz) {
+        try {
+            if (readLock.tryLock(10, TimeUnit.SECONDS)) {
+                if (runIdMap.containsKey(clazz)) {
+                    return runIdMap.get(clazz).get(0);
+                }
+            }
+            return null;
+        } catch (Exception e) {
+            return null;
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    public static void resetRunId(Class clazz, String runId) {
         try {
             while (true) {
                 if (writeLock.tryLock()) {
-                    GlobalContext.runId = runId;
+                    runIdMap.put(clazz, Arrays.asList(runId));
                     break;
                 }
             }
@@ -48,11 +66,29 @@ public class GlobalContext {
         }
     }
 
-    public static void removeRunId() {
+    public static void setRunId(Class clazz, String runId) {
         try {
             while (true) {
                 if (writeLock.tryLock()) {
-                    GlobalContext.runId = null;
+                    if (runIdMap.containsKey(clazz)) {
+                        runIdMap.get(clazz).add(runId);
+                    } else {
+                        runIdMap.put(clazz, Arrays.asList(runId));
+                    }
+                    break;
+                }
+            }
+        } catch (Exception e) {
+        } finally {
+            writeLock.unlock();
+        }
+    }
+
+    public static void removeRunId(Class clazz) {
+        try {
+            while (true) {
+                if (writeLock.tryLock()) {
+                    runIdMap.remove(clazz);
                     break;
                 }
             }

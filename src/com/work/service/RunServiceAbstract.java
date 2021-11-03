@@ -21,7 +21,7 @@ public abstract class RunServiceAbstract implements RunService {
 
     public void stop() {
         isRun = false;
-        GlobalContext.removeRunId();
+        GlobalContext.removeRunId(this.getClass());
     }
 
 }
