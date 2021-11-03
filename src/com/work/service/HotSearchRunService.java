@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,7 @@ public class HotSearchRunService extends RunServiceAbstract {
     @Override
     public void runAction(Project project) {
         while (isRun) {
-            List<String> runIds = GlobalContext.getRunIds(this.getClass());
+            Set<String> runIds = GlobalContext.getRunIds(this.getClass());
             List<String> pushList = new ArrayList<>();
             for (String runId : runIds) {
                 HotSearchEnum hotSearchEnum = HotSearchEnum.getByName(runId);
