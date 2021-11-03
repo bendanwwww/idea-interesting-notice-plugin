@@ -1,6 +1,7 @@
 package com.work.service;
 
 import com.intellij.openapi.project.Project;
+import com.work.common.GlobalContext;
 
 /**
  * 执行线程抽象类
@@ -20,6 +21,7 @@ public abstract class RunServiceAbstract implements RunService {
 
     public void stop() {
         isRun = false;
+        GlobalContext.removeRunId();
     }
 
 }

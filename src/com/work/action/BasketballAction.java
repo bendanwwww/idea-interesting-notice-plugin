@@ -1,34 +1,29 @@
 package com.work.action;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.ui.popup.ListPopup;
-import com.intellij.openapi.ui.popup.JBPopupFactory;
-import com.intellij.openapi.ui.popup.PopupStep;
-import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
+import com.intellij.openapi.project.Project;
 import com.work.common.RunServiceFactory;
 import com.work.external.BasketBallService;
 import com.work.common.GlobalContext;
 import com.work.service.GameRunService;
 import com.work.vo.GamesVO;
 import org.apache.commons.collections.CollectionUtils;
-import com.intellij.openapi.actionSystem.AnActionEvent;
 
 /**
- * 自动生成子菜单
+ * 篮球比赛action
  *
  * @author lsy <liushuoyang03@kuaishou.com>
  * Created on 2021-05-27
  */
-public class BasketballAction extends ActionAbstract {
+public class BasketballAction extends ListPopupActionAbstract {
 
     private static final String POPUP_TITLE = "请选择一场比赛";
     private static final String NO_GAME_TITLE = "当前无比赛";
@@ -36,16 +31,21 @@ public class BasketballAction extends ActionAbstract {
 
     private static final Logger log = Logger.getInstance(BasketballAction.class);
 
-    private static GameRunService gameRunService;
+    private static GameRunService gameRunService = RunServiceFactory.getByClass(GameRunService.class);
 
-    static {
-        gameRunService = RunServiceFactory.getByClass(GameRunService.class);
+    @Override
+    public void begin(Project project) {
+        gameRunService.run(project);
     }
 
     @Override
-    public void actionPerformed(@NotNull AnActionEvent event) {
-        // 启动线程
-        gameRunService.run(event.getProject());
+    public String getTitle() {
+        return POPUP_TITLE;
+    }
+
+    @Override
+    public LinkedHashMap<String, Object> getPopupList() {
+        LinkedHashMap<String, Object> resMap = new LinkedHashMap<>();
         // 获取本日比赛
         List<GamesVO.Game> gameList = BasketBallService.getGameList();
         if (CollectionUtils.isNotEmpty(gameList)) {
@@ -55,40 +55,30 @@ public class BasketballAction extends ActionAbstract {
                             && g.getType().equals("basketball"))
                     .collect(Collectors.toList());
         }
-        Map<String, String> gameTitleMap = new HashMap<>();
-        List<String> gameTitle = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(gameList)) {
             // 生成列表
-            Map<String, String> gameTitleMapTmp = new HashMap<>();
             for (GamesVO.Game g : gameList) {
                 String title = g.getHome_team() + "vs" + g.getVisit_team();
-                gameTitleMapTmp.put(title, g.getId());
+                resMap.put(title, g.getId());
             }
-            gameTitleMap.putAll(gameTitleMapTmp);
-            gameTitle.addAll(gameTitleMap.keySet());
         } else {
-            gameTitle.add(NO_GAME_TITLE);
+            resMap.put(NO_GAME_TITLE, "");
         }
-        gameTitle.add(CLOSE_TASK);
-        // 初始化菜单
-        ListPopup listPopup = JBPopupFactory.getInstance()
-                .createListPopup(new BaseListPopupStep<String>(POPUP_TITLE, gameTitle) {
-            @Override
-            public PopupStep onChosen(String selectedValue, boolean finalChoice) {
-                // 关闭线程
-                if (selectedValue.equals(CLOSE_TASK)) {
-                    gameRunService.stop();
-                }
-                // 获取内容id
-                String id = gameTitleMap.get(selectedValue);
-                if (StringUtils.isNotEmpty(id)) {
-                    // 插入全局上下文中
-                    GlobalContext.setRunId(id);
-                }
-                return super.onChosen(selectedValue, finalChoice);
-            }
-        });
-        // 展示
-        listPopup.showInFocusCenter();
+        resMap.put(CLOSE_TASK, "");
+        return resMap;
+    }
+
+    @Override
+    public void choseAction(String selectedValue) {
+        // 关闭线程
+        if (selectedValue.equals(CLOSE_TASK)) {
+            gameRunService.stop();
+        }
+        // 获取内容id
+        String id = String.valueOf(POPUP_MAP.get(selectedValue));
+        if (StringUtils.isNotEmpty(id)) {
+            // 插入全局上下文中
+            GlobalContext.setRunId(id);
+        }
     }
 }

@@ -48,4 +48,18 @@ public class GlobalContext {
         }
     }
 
+    public static void removeRunId() {
+        try {
+            while (true) {
+                if (writeLock.tryLock()) {
+                    GlobalContext.runId = null;
+                    break;
+                }
+            }
+        } catch (Exception e) {
+        } finally {
+            writeLock.unlock();
+        }
+    }
+
 }
