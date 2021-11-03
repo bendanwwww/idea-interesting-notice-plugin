@@ -73,6 +73,7 @@ public class BasketballAction extends ListPopupActionAbstract {
         // 关闭线程
         if (selectedValue.equals(CLOSE_TASK)) {
             gameRunService.stop();
+            return;
         }
         // 获取内容id
         String id = String.valueOf(POPUP_MAP.get(selectedValue));
