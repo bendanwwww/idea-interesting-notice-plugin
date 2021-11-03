@@ -1,8 +1,12 @@
 package com.work.common;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -16,7 +20,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class GlobalContext {
 
     /** 执行id */
-    private static volatile Map<Class, List<String>> runIdMap;
+    private static volatile Map<Class, Set<String>> runIdMap = new HashMap<>();
 
     private static ReadWriteLock lock = new ReentrantReadWriteLock();
     private static Lock readLock = lock.readLock();
@@ -24,14 +28,16 @@ public class GlobalContext {
 
     private GlobalContext() { }
 
-    public static List<String> getRunIds(Class clazz) {
+    public static Set<String> getRunIds(Class clazz) {
         try {
             if (readLock.tryLock(10, TimeUnit.SECONDS)) {
-                return runIdMap.get(clazz);
+                if (runIdMap.containsKey(clazz)) {
+                    return runIdMap.get(clazz);
+                }
             }
-            return null;
+            return new HashSet<>();
         } catch (Exception e) {
-            return null;
+            return new HashSet<>();
         } finally {
             readLock.unlock();
         }
@@ -41,7 +47,7 @@ public class GlobalContext {
         try {
             if (readLock.tryLock(10, TimeUnit.SECONDS)) {
                 if (runIdMap.containsKey(clazz)) {
-                    return runIdMap.get(clazz).get(0);
+                    return String.valueOf(runIdMap.get(clazz).toArray()[0]);
                 }
             }
             return null;
@@ -56,11 +62,12 @@ public class GlobalContext {
         try {
             while (true) {
                 if (writeLock.tryLock()) {
-                    runIdMap.put(clazz, Arrays.asList(runId));
+                    runIdMap.put(clazz, new HashSet(Arrays.asList(runId)));
                     break;
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             writeLock.unlock();
         }
@@ -71,14 +78,18 @@ public class GlobalContext {
             while (true) {
                 if (writeLock.tryLock()) {
                     if (runIdMap.containsKey(clazz)) {
-                        runIdMap.get(clazz).add(runId);
+                        Set<String> mapSet = new HashSet<>();
+                        mapSet.addAll(runIdMap.get(clazz));
+                        mapSet.add(runId);
+                        runIdMap.put(clazz, mapSet);
                     } else {
-                        runIdMap.put(clazz, Arrays.asList(runId));
+                        runIdMap.put(clazz, new HashSet<>(Arrays.asList(runId)));
                     }
                     break;
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             writeLock.unlock();
         }
@@ -93,6 +104,7 @@ public class GlobalContext {
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             writeLock.unlock();
         }
