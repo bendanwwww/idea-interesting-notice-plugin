@@ -59,6 +59,7 @@ public class HotSearchRunService extends RunServiceAbstract {
 
                             }
                         }
+                        break;
                     case ZHIHU:
                         List<ZhihuHotSearchVO.ZhihuInfo> zhihuHotList = HotSearchService.getZhihuHotSearchList();
                         for (ZhihuHotSearchVO.ZhihuInfo info : zhihuHotList) {
@@ -68,6 +69,7 @@ public class HotSearchRunService extends RunServiceAbstract {
                                 zhihuHotSearchMap.put(info.getUrl(), info);
                             }
                         }
+                        break;
                 }
             }
             for (String text : pushList) {
