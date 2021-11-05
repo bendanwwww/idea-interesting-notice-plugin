@@ -23,6 +23,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.NoHttpResponseException;
 import org.apache.http.client.HttpRequestRetryHandler;
+import org.apache.http.client.ServiceUnavailableRetryStrategy;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
@@ -67,8 +68,12 @@ public class ApacheHttpTool {
     // 连接池连接占满时等待超时时间
     private static final int CONN_MANAGER_TIMEOUT = 500;
 
-    /** 调用失败重试次数 */
-    private static final int COUNT = 1;
+    /** 调用异常失败重试次数 */
+    private static final int SERVICE_ERROR_RETRY_COUNT = 3;
+    /** code非200重试次数 */
+    private static final int HTTP_CODE_ERROR_RETRY_COUNT = 3;
+    /** code非200重试间隔时间 */
+    private static final int HTTP_CODE_ERROR_RETRY_TIME = 1000;
 
     /** 默认连接池参数 */
     // 连接池最大连接数
@@ -91,7 +96,9 @@ public class ApacheHttpTool {
         httpClient = HttpClients.custom()
                 .setConnectionManager(pool)
                 .setDefaultRequestConfig(requestConfig)
-                .setRetryHandler(new MyHttpRequestRetryHandler()).build();
+                .setServiceUnavailableRetryStrategy(new MyServiceUnavailableRetryStrategy())
+                .setRetryHandler(new MyHttpRequestRetryHandler())
+                .build();
     }
 
     /**
@@ -277,7 +284,7 @@ public class ApacheHttpTool {
      * @param params
      * @return
      */
-    public static Result httpPostWithJsonWithTimeOut(String url, Map<String, String> header, Object params,
+    public static Result httpPostWithJson(String url, Map<String, String> header, Object params,
                                           int connectionTimeout, int socketTimeout) {
         // 设置请求和传输超时时间
         RequestConfig requestConfig = RequestConfig.custom()
@@ -368,13 +375,13 @@ public class ApacheHttpTool {
 
 
     /**
-     * 设置重试
+     * 设置异常重试
      */
     static class MyHttpRequestRetryHandler implements HttpRequestRetryHandler {
 
         @Override
         public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
-            if (executionCount > COUNT) { // 超过重试次数，就放弃
+            if (executionCount > SERVICE_ERROR_RETRY_COUNT) { // 超过重试次数，就放弃
                 return false;
             }
             if (exception instanceof NoHttpResponseException) {// 没有响应, 重试
@@ -403,6 +410,28 @@ public class ApacheHttpTool {
             // 如果请求是幂等的，则重试
             if (!(request instanceof HttpEntityEnclosingRequest)) return true;
             return false;
+        }
+    }
+
+    /**
+     * 状态码重试
+     */
+    static class MyServiceUnavailableRetryStrategy implements ServiceUnavailableRetryStrategy {
+
+        @Override
+        public boolean retryRequest(HttpResponse response, int executionCount, HttpContext context) {
+            if (response.getStatusLine().getStatusCode() != 200 && executionCount < HTTP_CODE_ERROR_RETRY_COUNT) {
+                log.info("http code: {}, 重试第{}次", response.getStatusLine().getStatusCode(), executionCount);
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        @Override
+        public long getRetryInterval() {
+            return HTTP_CODE_ERROR_RETRY_TIME;
         }
     }
 

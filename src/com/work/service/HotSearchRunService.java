@@ -29,7 +29,7 @@ public class HotSearchRunService extends RunServiceAbstract {
 
     private static final Logger log = LoggerFactory.getLogger(HotSearchRunService.class);
 
-    private static final int ACTION_SLEEP_TIME = 5 * 1000;
+    private static final int ACTION_SLEEP_TIME = 3 * 60 * 1000;
 
     private static final int TEXT_SLEEP_TIME = 5 * 1000;
 

@@ -6,10 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
-import com.intellij.openapi.components.Service;
 import com.work.utils.ApacheHttpTool;
 import com.work.vo.GameLiveVO;
 import com.work.vo.GamesVO;
@@ -32,7 +30,7 @@ public class BasketBallService {
     public static List<GamesVO.Game> getGameList() {
         Map<String, String> header = new HashMap<>();
         Map<String, String> params = new HashMap<>();
-        ApacheHttpTool.Result result = ApacheHttpTool.httpGet(GAME_LIST_URL, header, params);
+        ApacheHttpTool.Result result = ApacheHttpTool.httpGet(GAME_LIST_URL, header, params, 3000, 5000);
         GamesVO resultObj = JSON.parseObject(result.getBody(), new TypeReference<GamesVO>() {});
         return resultObj.getList();
     }
@@ -49,7 +47,7 @@ public class BasketBallService {
 
     public static List<GameLiveVO> getGameLiveText(String id, String gameLiveId) {
         // 获取比赛直播文案
-        String liveTextUrl = MessageFormat.format(GAME_LIVE_TEXT_URL, id, gameLiveId);
+        String liveTextUrl = MessageFormat.format(GAME_LIVE_TEXT_URL, id, gameLiveId, 3000, 10000);
         Map<String, String> header = new HashMap<>();
         header.put("authority", "dingshi4pc.qiumibao.com");
         header.put("sec-ch-ua", "\"Google Chrome\";v=\"95\", \"Chromium\";v=\"95\", \";Not A Brand\";v=\"99\"");
