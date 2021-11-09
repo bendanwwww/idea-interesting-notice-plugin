@@ -20,7 +20,7 @@
 
   <!-- 插件兼容IDEAbuild 号-->
   <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-  <idea-version since-build="173.0"/>
+  <idea-version since-build="204"/>
 
   <!-- 插件所依赖的其他插件的id -->
   <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html on how to target different products -->
@@ -28,7 +28,8 @@
 
   <!-- 声明该插件对IDEA core或其他插件的扩展 -->
   <extensions defaultExtensionNs="com.intellij">
-<!--    <notificationGroup id="gameText" displayType="BALLOON" key="happyWork"/>-->
+    <notificationGroup id="HotSearch" displayType="BALLOON"/>
+    <notificationGroup id="Game" displayType="BALLOON"/>
   </extensions>
 
   <!-- 编写插件动作 -->
@@ -36,7 +37,7 @@
     <group id="happyWork" text="研发工具" popup="true" description="为提升工作效率而生的插件">
       <add-to-group group-id="MainMenu" anchor="last"/>
       <action id="BasketballAction" class="com.work.action.BasketballAction" text="篮球直播" />
-      <action id="HotSearchAction" class="com.work.action.HotSearchAction" text="热搜" />
+<!--      <action id="HotSearchAction" class="com.work.action.HotSearchAction" text="热搜" />-->
     </group>
   </actions>
 

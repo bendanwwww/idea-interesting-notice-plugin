@@ -11,7 +11,9 @@ import org.slf4j.LoggerFactory;
 
 import com.intellij.notification.NotificationDisplayType;
 import com.intellij.notification.NotificationGroup;
+import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.NotificationType;
+import com.intellij.notification.impl.NotificationGroupEP;
 import com.intellij.openapi.project.Project;
 import com.work.common.GlobalContext;
 import com.work.enums.HotSearchEnum;
@@ -34,7 +36,7 @@ public class HotSearchRunService extends RunServiceAbstract {
     private static final int TEXT_SLEEP_TIME = 5 * 1000;
 
     private static NotificationGroup notify =
-            new NotificationGroup("hotSearch.notify", NotificationDisplayType.BALLOON, true);
+            NotificationGroupManager.getInstance().getNotificationGroup("HotSearch");
 
     private Map<String, WeiboHotSearchVO.WeiboInfo> weiboHotSearchMap = new HashMap<>();
     private Map<String, ZhihuHotSearchVO.ZhihuInfo> zhihuHotSearchMap = new HashMap<>();

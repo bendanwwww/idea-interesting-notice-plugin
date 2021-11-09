@@ -7,8 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.intellij.notification.NotificationDisplayType;
 import com.intellij.notification.NotificationGroup;
+import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.project.Project;
 import com.work.common.GlobalContext;
@@ -28,7 +28,7 @@ public class GameRunService extends RunServiceAbstract {
     private static final int ACTION_SLEEP_TIME = 5000;
 
     private static NotificationGroup notify =
-            new NotificationGroup("game.notify", NotificationDisplayType.BALLOON, true);
+            NotificationGroupManager.getInstance().getNotificationGroup("Game");
 
     private GameRunService() {}
 
