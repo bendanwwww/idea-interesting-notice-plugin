@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.socket.interesting.notice.plugin</id>
   <name>interesting-notice</name>
-  <version>1.1.1</version>
+  <version>1.1.2</version>
   <vendor email="461806307@qq.com">lsy</vendor>
 
   <!-- 插件的描述 （不能使用默认值，必须修改成自己的。并且需要大于40个字符）-->
