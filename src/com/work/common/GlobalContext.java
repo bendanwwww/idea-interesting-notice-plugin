@@ -1,10 +1,8 @@
 package com.work.common;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -19,7 +17,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class GlobalContext {
 
-    /** 执行id */
+    /** 正在执行id 集合 */
     private static volatile Map<Class, Set<String>> runIdMap = new HashMap<>();
 
     private static ReadWriteLock lock = new ReentrantReadWriteLock();

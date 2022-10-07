@@ -31,7 +31,7 @@ public class BasketBallService {
         Map<String, String> header = new HashMap<>();
         Map<String, String> params = new HashMap<>();
         ApacheHttpTool.Result result = ApacheHttpTool.httpGet(GAME_LIST_URL, header, params, 3000, 5000);
-        GamesVO resultObj = JSON.parseObject(result.getBody(), new TypeReference<GamesVO>() {});
+        GamesVO resultObj = JSON.parseObject(result.getBody(), new TypeReference<GamesVO>() { });
         return resultObj.getList();
     }
 
@@ -65,7 +65,7 @@ public class BasketBallService {
         if (!liveTextResult.isOk()) {
             return null;
         }
-        return JSON.parseObject(liveTextResult.getBody(), new TypeReference<List<GameLiveVO>>() {});
+        return JSON.parseObject(liveTextResult.getBody(), new TypeReference<List<GameLiveVO>>() { });
     }
 
     public static void main(String[] args) {

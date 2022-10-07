@@ -2,6 +2,8 @@ package com.work.vo;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * 微博热搜实体
  *
@@ -30,7 +32,8 @@ public class WeiboHotSearchVO {
 
     public static class WeiboInfo {
         private String name;
-        private long hot;
+        private String hotType;
+        private String hot;
         private String url;
 
         public String getName() {
@@ -41,11 +44,29 @@ public class WeiboHotSearchVO {
             this.name = name;
         }
 
-        public long getHot() {
-            return hot;
+        public String getHotType() {
+            if (StringUtils.isBlank(hot)) {
+                return null;
+            }
+            String[] hots = hot.split(" ");
+            if (hots.length == 1) {
+                return null;
+            }
+            return hots[0];
         }
 
-        public void setHot(long hot) {
+        public long getHot() {
+            if (StringUtils.isBlank(hot)) {
+                return -1L;
+            }
+            String[] hots = hot.split(" ");
+            if (hots.length == 1) {
+                return Long.valueOf(hot);
+            }
+            return Long.valueOf(hots[1]);
+        }
+
+        public void setHot(String hot) {
             this.hot = hot;
         }
 

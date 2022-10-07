@@ -10,7 +10,7 @@ import com.work.common.GlobalContext;
  */
 public abstract class RunServiceAbstract implements RunService {
 
-    boolean isRun = false;
+    protected boolean isRun = false;
 
     public void run(Project project) {
         if (!isRun) {

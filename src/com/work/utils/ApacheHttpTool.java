@@ -11,8 +11,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
+
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLHandshakeException;
 
@@ -49,6 +49,7 @@ import com.work.result.ResultException;
  * @author liushuoyang
  * @Description 2019年1月30日
  */
+@SuppressWarnings({"HiddenField"})
 public class ApacheHttpTool {
 
     private static final Logger log = LoggerFactory.getLogger(ApacheHttpTool.class);
@@ -145,13 +146,13 @@ public class ApacheHttpTool {
         url = url + appendParams(params);
 
         HttpGet get = new HttpGet(url);
-        if(requestConfig != null) {
+        if (requestConfig != null) {
             get.setConfig(requestConfig);
         }
 
         // 构造消息头
         List<String> headerKey = new ArrayList<String>(headers.keySet());
-        for(String key : headerKey) {
+        for (String key : headerKey) {
             get.setHeader(key, headers.get(key));
         }
 
@@ -164,15 +165,15 @@ public class ApacheHttpTool {
 
             // 检验返回码
             int statusCode = response.getStatusLine().getStatusCode();
-            if(statusCode != HttpStatus.SC_OK) {
+            if (statusCode != HttpStatus.SC_OK) {
                 throw new ResultException("http返回状态异常:" + statusCode + ":" + responseBody);
             }
             Result result = new Result(statusCode, responseBody);
             return result;
         } catch (Exception e) {
             throw new ResultException(e.getMessage());
-        }finally {
-            if(get != null) {
+        } finally {
+            if (get != null) {
                 get.releaseConnection();
             }
         }
@@ -219,20 +220,20 @@ public class ApacheHttpTool {
      */
     public static Result httpPostWithForm(String url, Map<String, String> headers, Map<String, String> params, RequestConfig requestConfig) {
         HttpPost post = new HttpPost(url);
-        if(requestConfig != null) {
+        if (requestConfig != null) {
             post.setConfig(requestConfig);
         }
         // 构造消息头
         post.setHeader("Content-type", "application/x-www-form-urlencoded");
         List<String> headerKey = new ArrayList<String>(headers.keySet());
-        for(String key : headerKey) {
+        for (String key : headerKey) {
             post.setHeader(key, headers.get(key));
         }
         // 构建请求参数
         List<NameValuePair> paramList = new ArrayList <NameValuePair>();
-        if(!params.isEmpty()) {
+        if (!params.isEmpty()) {
             Set<String> keySet = params.keySet();
-            for(String key : keySet) {
+            for (String key : keySet) {
                 paramList.add(new BasicNameValuePair(key, params.get(key)));
             }
         }
@@ -244,21 +245,22 @@ public class ApacheHttpTool {
 
         try {
             long startTime = System.currentTimeMillis();
-            log.info("httpClient.post url: {}, [request.headers]: {}, [request.body]: {}", url, JSON.toJSONString(headers), JSON.toJSONString(params));
+            log.info("httpClient.post url: {}, [request.headers]: {}, [request.body]: {}",
+                    url, JSON.toJSONString(headers), JSON.toJSONString(params));
             HttpResponse response = httpClient.execute(post);
             String responseBody = EntityUtils.toString(response.getEntity());
             log.info("httpClient.post[response]: {} ,请求耗时:[{}]ms", responseBody, (System.currentTimeMillis() - startTime));
             // 检验返回码
             int statusCode = response.getStatusLine().getStatusCode();
-            if(statusCode != HttpStatus.SC_OK) {
+            if (statusCode != HttpStatus.SC_OK) {
                 throw new ResultException("http返回状态异常:" + statusCode + ":" + responseBody);
             }
             Result result = new Result(statusCode, responseBody);
             return result;
         } catch (Exception e) {
             throw new ResultException(e.getMessage());
-        }finally{
-            if(post != null) {
+        } finally {
+            if (post != null) {
                 post.releaseConnection();
             }
         }
@@ -305,19 +307,19 @@ public class ApacheHttpTool {
      */
     public static Result httpPostWithJson(String url, Map<String, String> headers, Object params, RequestConfig requestConfig) {
         HttpPost post = new HttpPost(url);
-        if(requestConfig != null) {
+        if (requestConfig != null) {
             post.setConfig(requestConfig);
         }
         // 构造消息头
         post.setHeader("Content-type", "application/json; charset=utf-8");
         List<String> headerKey = new ArrayList<String>(headers.keySet());
-        for(String key : headerKey) {
+        for (String key : headerKey) {
             post.setHeader(key, headers.get(key));
         }
         String paramsStr = null;
-        if(params instanceof String){
-            paramsStr = (String)params;
-        }else{
+        if (params instanceof String) {
+            paramsStr = (String) params;
+        } else {
             paramsStr = JSON.toJSONString(params);
         }
         // 构建消息实体
@@ -329,46 +331,40 @@ public class ApacheHttpTool {
 
         try {
             long startTime = System.currentTimeMillis();
-            log.info("httpClient.post url: {}, [request.headers]: {}, [request.body]: {}", url, JSON.toJSONString(headers), JSON.toJSONString(paramsStr));
+            log.info("httpClient.post url: {}, [request.headers]: {}, [request.body]: {}",
+                    url, JSON.toJSONString(headers), JSON.toJSONString(paramsStr));
             HttpResponse response = httpClient.execute(post);
             String responseBody = EntityUtils.toString(response.getEntity());
             log.info("httpClient.post[response]: {} ,请求耗时:[{}]ms", responseBody, (System.currentTimeMillis() - startTime));
             // 检验返回码
             int statusCode = response.getStatusLine().getStatusCode();
-            if(statusCode != HttpStatus.SC_OK) {
+            if (statusCode != HttpStatus.SC_OK) {
                 throw new ResultException("http返回状态异常:" + statusCode + ":" + responseBody);
             }
             Result result = new Result(statusCode, responseBody);
             return result;
         } catch (Exception e) {
             throw new ResultException(e.getMessage());
-        }finally{
-            if(post != null) {
+        } finally {
+            if (post != null) {
                 post.releaseConnection();
             }
         }
     }
 
-    // 构建唯一会话Id
-    private static String getSessionId() {
-        UUID uuid = UUID.randomUUID();
-        String str = uuid.toString();
-        return str.substring(0, 8) + str.substring(9, 13) + str.substring(14, 18) + str.substring(19, 23) + str.substring(24);
-    }
-
     // 拼接请求参数
     public static String appendParams(Map<String, String> params) {
-        if(params != null && params.size() > 0){
+        if (params != null && params.size() > 0) {
             Set<String> paramKey = params.keySet();
             Iterator<String> it = paramKey.iterator();
             List<String> paramList = new ArrayList<String>();
-            while(it.hasNext()) {
+            while (it.hasNext()) {
                 String key = it.next();
                 String value = params.get(key);
                 paramList.add(key + "=" + value);
             }
             return "?" + paramList.stream().collect(Collectors.joining("&"));
-        }else{
+        } else {
             return "";
         }
     }
@@ -384,23 +380,23 @@ public class ApacheHttpTool {
             if (executionCount > SERVICE_ERROR_RETRY_COUNT) { // 超过重试次数，就放弃
                 return false;
             }
-            if (exception instanceof NoHttpResponseException) {// 没有响应, 重试
+            if (exception instanceof NoHttpResponseException) { // 没有响应, 重试
                 log.info("没有响应，重试1次");
                 return true;
-            } else if (exception instanceof ConnectTimeoutException) {// 连接超时, 重试
+            } else if (exception instanceof ConnectTimeoutException) { // 连接超时, 重试
                 log.info("连接超时，重试1次");
                 return true;
-            } else if (exception instanceof SocketTimeoutException) {// 连接或读取超时, 重试
+            } else if (exception instanceof SocketTimeoutException) { // 连接或读取超时, 重试
                 log.info("连接或读取超时，重试1次");
                 return true;
-            } else if (exception instanceof UnknownHostException) {// 找不到服务器
+            } else if (exception instanceof UnknownHostException) { // 找不到服务器
                 log.info("找不到服务器，重试1次");
                 return true;
-            } else if (exception instanceof SSLHandshakeException) {// 本地证书异常
+            } else if (exception instanceof SSLHandshakeException) { // 本地证书异常
                 return false;
-            } else if (exception instanceof InterruptedIOException) {// 被中断
+            } else if (exception instanceof InterruptedIOException) { // 被中断
                 return false;
-            } else if (exception instanceof SSLException) {// SSL异常
+            } else if (exception instanceof SSLException) { // SSL异常
                 return false;
             } else {
                 log.error("未记录的请求异常：" + exception.getClass());
@@ -408,7 +404,9 @@ public class ApacheHttpTool {
             HttpClientContext clientContext = HttpClientContext.adapt(context);
             HttpRequest request = clientContext.getRequest();
             // 如果请求是幂等的，则重试
-            if (!(request instanceof HttpEntityEnclosingRequest)) return true;
+            if (!(request instanceof HttpEntityEnclosingRequest)) {
+                return true;
+            }
             return false;
         }
     }
@@ -420,11 +418,11 @@ public class ApacheHttpTool {
 
         @Override
         public boolean retryRequest(HttpResponse response, int executionCount, HttpContext context) {
-            if (response.getStatusLine().getStatusCode() != 200 && executionCount < HTTP_CODE_ERROR_RETRY_COUNT) {
+            if (response.getStatusLine().getStatusCode() != org.apache.commons.httpclient.HttpStatus.SC_OK
+                    && executionCount < HTTP_CODE_ERROR_RETRY_COUNT) {
                 log.info("http code: {}, 重试第{}次", response.getStatusLine().getStatusCode(), executionCount);
                 return true;
-            }
-            else {
+            } else {
                 return false;
             }
         }
@@ -442,21 +440,14 @@ public class ApacheHttpTool {
 
         private static final long serialVersionUID = -5122451672072932559L;
 
-        /**
-         * response code
-         */
+        /** response code */
         private int code;
-        /**
-         * body信息文本
-         */
+        /** body信息文本 */
         private String body;
-        /**
-         * response code 200 标志
-         */
+        /** response code 200 标志 */
         private boolean ok;
 
-        public Result() {
-        }
+        public Result() { }
 
         Result(int code, String body) {
             this.code = code;
@@ -490,11 +481,11 @@ public class ApacheHttpTool {
 
         @Override
         public String toString() {
-            return "Result{" +
-                    "code=" + code +
-                    ", body='" + body + '\'' +
-                    ", ok=" + ok +
-                    '}';
+            return "Result{"
+                    + "code=" + code
+                    + ", body='" + body + '\''
+                    + ", ok=" + ok
+                    + '}';
         }
     }
 }

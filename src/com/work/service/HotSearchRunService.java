@@ -9,11 +9,9 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.intellij.notification.NotificationDisplayType;
 import com.intellij.notification.NotificationGroup;
 import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.NotificationType;
-import com.intellij.notification.impl.NotificationGroupEP;
 import com.intellij.openapi.project.Project;
 import com.work.common.GlobalContext;
 import com.work.enums.HotSearchEnum;
@@ -41,7 +39,7 @@ public class HotSearchRunService extends RunServiceAbstract {
     private Map<String, WeiboHotSearchVO.WeiboInfo> weiboHotSearchMap = new HashMap<>();
     private Map<String, ZhihuHotSearchVO.ZhihuInfo> zhihuHotSearchMap = new HashMap<>();
 
-    private HotSearchRunService() {}
+    private HotSearchRunService() { }
 
     @Override
     public void runAction(Project project) {
@@ -71,6 +69,8 @@ public class HotSearchRunService extends RunServiceAbstract {
                                 zhihuHotSearchMap.put(info.getUrl(), info);
                             }
                         }
+                        break;
+                    default:
                         break;
                 }
             }

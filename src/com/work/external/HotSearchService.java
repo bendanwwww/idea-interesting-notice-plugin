@@ -28,7 +28,7 @@ public class HotSearchService {
         Map<String, String> params = new HashMap<>();
         header.put("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36");
         ApacheHttpTool.Result result = ApacheHttpTool.httpGet(WEIBO_URL, header, params, 3000, 10000);
-        WeiboHotSearchVO data = JSON.parseObject(result.getBody(), new TypeReference<WeiboHotSearchVO>() {});
+        WeiboHotSearchVO data = JSON.parseObject(result.getBody(), new TypeReference<WeiboHotSearchVO>() { });
         if (Objects.isNull(data)) {
             return new ArrayList<>();
         }
@@ -40,7 +40,7 @@ public class HotSearchService {
         Map<String, String> params = new HashMap<>();
         header.put("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36");
         ApacheHttpTool.Result result = ApacheHttpTool.httpGet(ZHIHU_URL, header, params, 3000, 10000);
-        ZhihuHotSearchVO data = JSON.parseObject(result.getBody(), new TypeReference<ZhihuHotSearchVO>() {});
+        ZhihuHotSearchVO data = JSON.parseObject(result.getBody(), new TypeReference<ZhihuHotSearchVO>() { });
         if (Objects.isNull(data)) {
             return new ArrayList<>();
         }

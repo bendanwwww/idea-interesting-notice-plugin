@@ -4,16 +4,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
+import com.work.common.GlobalContext;
 import com.work.common.RunServiceFactory;
 import com.work.external.BasketBallService;
-import com.work.common.GlobalContext;
 import com.work.service.GameRunService;
 import com.work.vo.GamesVO;
-import org.apache.commons.collections.CollectionUtils;
 
 /**
  * 篮球比赛action

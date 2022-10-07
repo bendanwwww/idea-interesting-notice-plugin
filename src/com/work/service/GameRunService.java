@@ -30,7 +30,7 @@ public class GameRunService extends RunServiceAbstract {
     private static NotificationGroup notify =
             NotificationGroupManager.getInstance().getNotificationGroup("Game");
 
-    private GameRunService() {}
+    private GameRunService() { }
 
     @Override
     public void runAction(Project project) {

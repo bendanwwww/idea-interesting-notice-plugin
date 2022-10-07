@@ -7,7 +7,7 @@ import java.util.Map;
 import com.work.result.ResultException;
 
 /**
- * 执行线程类工厂
+ * 执行线程实例工厂
  *
  * @author lsy
  */
@@ -15,7 +15,7 @@ public class RunServiceFactory {
 
     private static final Map<Class, Object> RUN_SERVICE_MAP = new HashMap<>();
 
-    public synchronized static <T> T getByClass(Class<T> clazz) {
+    public static synchronized <T> T getByClass(Class<T> clazz) {
         if (RUN_SERVICE_MAP.containsKey(clazz)) {
             return (T) RUN_SERVICE_MAP.get(clazz);
         }

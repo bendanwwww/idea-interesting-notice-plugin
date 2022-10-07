@@ -6,6 +6,7 @@ import java.util.List;
  * @author lsy <liushuoyang03@kuaishou.com>
  * Created on 2021-06-01
  */
+@SuppressWarnings({"MethodName", "MemberName", "ParameterName"})
 public class GamesVO {
 
     private String code;

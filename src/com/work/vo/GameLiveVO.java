@@ -5,6 +5,7 @@ package com.work.vo;
  *
  * @author lsy
  */
+@SuppressWarnings({"MethodName", "MemberName", "ParameterName"})
 public class GameLiveVO {
 
     private String live_id;

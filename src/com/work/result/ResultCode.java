@@ -118,8 +118,8 @@ public enum ResultCode {
      */
     XXGL_TRANSLATOR_110000("110000", "业务系统转接"),
     XXGL_CLASSAUDIT_110001("110001", "班级开班未审核"),
-    
-    
+
+
     YTK_120001("120001", "云听课接口异常"),
 
     /**
@@ -242,11 +242,11 @@ public enum ResultCode {
     /**
      * code
      */
-    public String code;
+    private String code;
     /**
      * 信息
      */
-    public String message;
+    private String message;
 
     ResultCode(String code, String message) {
         this.setCode(code);

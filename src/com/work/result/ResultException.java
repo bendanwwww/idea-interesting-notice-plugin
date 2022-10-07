@@ -14,11 +14,11 @@ public class ResultException extends RuntimeException {
     /** 传递给ResultVo的指令，异常信息是否需要显示 */
     private Boolean showMessage;
 
-    public ResultException() {}
+    public ResultException() { }
 
     public ResultException(ResultCode code) {
         /** 抛出异常打印message信息 */
-        super(code.message);
+        super(code.getMessage());
         this.code = code;
     }
 
