@@ -14,6 +14,8 @@ import com.work.vo.WeiboHotSearchVO;
 import com.work.vo.ZhihuHotSearchVO;
 
 /**
+ * 热搜相关 service
+ *
  * @author lsy <liushuoyang03@kuaishou.com>
  * Created on 2021-06-01
  */

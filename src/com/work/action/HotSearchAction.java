@@ -2,6 +2,9 @@ package com.work.action;
 
 import java.util.LinkedHashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.intellij.openapi.project.Project;
 import com.work.common.GlobalContext;
 import com.work.common.RunServiceFactory;
@@ -14,6 +17,8 @@ import com.work.service.HotSearchRunService;
  * @author lsy
  */
 public class HotSearchAction extends ListPopupActionAbstract {
+
+    private static final Logger log = LoggerFactory.getLogger(HotSearchAction.class);
 
     private static final String POPUP_TITLE = "请选择数据源";
     private static final String CLOSE_TASK = "停止播放";
@@ -48,6 +53,7 @@ public class HotSearchAction extends ListPopupActionAbstract {
             return;
         }
         // 插入全局上下文中
+        log.info("HotSearchAction.choseAction selectedValue: {}", selectedValue);
         GlobalContext.setRunId(HotSearchRunService.class, selectedValue);
     }
 }

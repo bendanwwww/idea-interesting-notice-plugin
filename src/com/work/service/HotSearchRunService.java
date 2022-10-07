@@ -1,11 +1,13 @@
 package com.work.service;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +33,7 @@ public class HotSearchRunService extends RunServiceAbstract {
 
     private static final int ACTION_SLEEP_TIME = 3 * 60 * 1000;
 
-    private static final int TEXT_SLEEP_TIME = 5 * 1000;
+    private static final int TEXT_SLEEP_TIME = 10 * 1000;
 
     private static NotificationGroup notify =
             NotificationGroupManager.getInstance().getNotificationGroup("HotSearch");
@@ -45,6 +47,9 @@ public class HotSearchRunService extends RunServiceAbstract {
     public void runAction(Project project) {
         while (isRun) {
             Set<String> runIds = GlobalContext.getRunIds(this.getClass());
+            if (CollectionUtils.isEmpty(runIds)) {
+                continue;
+            }
             List<String> pushList = new ArrayList<>();
             for (String runId : runIds) {
                 HotSearchEnum hotSearchEnum = HotSearchEnum.getByName(runId);
@@ -53,8 +58,7 @@ public class HotSearchRunService extends RunServiceAbstract {
                         List<WeiboHotSearchVO.WeiboInfo> weiboHotList = HotSearchService.getWeiboHotSearchList();
                         for (WeiboHotSearchVO.WeiboInfo info : weiboHotList) {
                             if (!weiboHotSearchMap.containsKey(info.getUrl())) {
-                                String pushText = "标题: " + info.getName() + " 热度: " + info.getHot() + " 地址: " + info.getUrl();
-                                pushList.add(pushText);
+                                pushList.add(MessageFormat.format(HotSearchEnum.WEIBO.getShowFormat(), info.getName(), info.getHot(), info.getUrl()));
                                 weiboHotSearchMap.put(info.getUrl(), info);
 
                             }
@@ -64,8 +68,7 @@ public class HotSearchRunService extends RunServiceAbstract {
                         List<ZhihuHotSearchVO.ZhihuInfo> zhihuHotList = HotSearchService.getZhihuHotSearchList();
                         for (ZhihuHotSearchVO.ZhihuInfo info : zhihuHotList) {
                             if (!zhihuHotSearchMap.containsKey(info.getUrl())) {
-                                String pushText = "标题: " + info.getQuery() + " 地址: " + info.getUrl();
-                                pushList.add(pushText);
+                                pushList.add(MessageFormat.format(HotSearchEnum.ZHIHU.getShowFormat(), info.getName(), info.getUrl()));
                                 zhihuHotSearchMap.put(info.getUrl(), info);
                             }
                         }

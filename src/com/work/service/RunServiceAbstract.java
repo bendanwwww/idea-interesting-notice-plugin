@@ -1,5 +1,8 @@
 package com.work.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.intellij.openapi.project.Project;
 import com.work.common.GlobalContext;
 
@@ -10,18 +13,23 @@ import com.work.common.GlobalContext;
  */
 public abstract class RunServiceAbstract implements RunService {
 
+    private static final Logger log = LoggerFactory.getLogger(RunServiceAbstract.class);
+
     protected boolean isRun = false;
 
     public void run(Project project) {
         if (!isRun) {
             isRun = true;
-            new Thread(() -> runAction(project)).start();
+            new Thread(() -> {
+                log.info("======= {} is run =======", this.getClass().getSimpleName());
+                runAction(project);
+            }).start();
         }
     }
 
     public void stop() {
         isRun = false;
-        GlobalContext.removeRunId(this.getClass());
+        GlobalContext.removeRunInfo(this.getClass());
+        log.info("======= {} is stop =======", this.getClass().getSimpleName());
     }
-
 }

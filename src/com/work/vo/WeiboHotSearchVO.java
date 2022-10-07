@@ -57,7 +57,7 @@ public class WeiboHotSearchVO {
 
         public long getHot() {
             if (StringUtils.isBlank(hot)) {
-                return -1L;
+                return 0L;
             }
             String[] hots = hot.split(" ");
             if (hots.length == 1) {

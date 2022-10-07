@@ -10,6 +10,9 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 插件全局变量
  *
@@ -17,8 +20,12 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class GlobalContext {
 
+    private static final Logger log = LoggerFactory.getLogger(GlobalContext.class);
+
     /** 正在执行id 集合 */
     private static volatile Map<Class, Set<String>> runIdMap = new HashMap<>();
+    /** 正在执行id 执行参数 */
+    private static volatile Map<String, Object> runIdParamMap = new HashMap<>();
 
     private static ReadWriteLock lock = new ReentrantReadWriteLock();
     private static Lock readLock = lock.readLock();
@@ -35,6 +42,7 @@ public class GlobalContext {
             }
             return new HashSet<>();
         } catch (Exception e) {
+            e.printStackTrace();
             return new HashSet<>();
         } finally {
             readLock.unlock();
@@ -50,6 +58,7 @@ public class GlobalContext {
             }
             return null;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         } finally {
             readLock.unlock();
@@ -68,6 +77,22 @@ public class GlobalContext {
             e.printStackTrace();
         } finally {
             writeLock.unlock();
+        }
+    }
+
+    public static Object getRunIdParam(String runId) {
+        try {
+            if (readLock.tryLock(10, TimeUnit.SECONDS)) {
+                if (runIdParamMap.containsKey(runId)) {
+                    return runIdParamMap.get(runId);
+                }
+            }
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            readLock.unlock();
         }
     }
 
@@ -93,11 +118,11 @@ public class GlobalContext {
         }
     }
 
-    public static void removeRunId(Class clazz) {
+    public static void setRunParam(String runId, Object runParam) {
         try {
             while (true) {
                 if (writeLock.tryLock()) {
-                    runIdMap.remove(clazz);
+                    runIdParamMap.put(runId, runParam);
                     break;
                 }
             }
@@ -108,4 +133,19 @@ public class GlobalContext {
         }
     }
 
+    public static void removeRunInfo(Class clazz) {
+        try {
+            while (true) {
+                if (writeLock.tryLock()) {
+                    runIdMap.remove(clazz);
+                    runIdParamMap.remove(clazz);
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            writeLock.unlock();
+        }
+    }
 }

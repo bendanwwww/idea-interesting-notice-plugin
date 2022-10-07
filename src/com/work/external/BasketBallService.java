@@ -13,6 +13,8 @@ import com.work.vo.GameLiveVO;
 import com.work.vo.GamesVO;
 
 /**
+ * 篮球比赛相关 service
+ *
  * @author lsy <liushuoyang03@kuaishou.com>
  * Created on 2021-06-01
  */
@@ -72,27 +74,27 @@ public class BasketBallService {
 
         System.out.println(JSONObject.toJSONString(getGameList()));
 
-        String testUrl = "https://dingshi4pc.qiumibao.com/livetext/data/cache/max_sid/776192/0.htm?time=0.5625657025442139";
-        Map<String, String> header = new HashMap<>();
-        Map<String, String> params = new HashMap<>();
-        ApacheHttpTool.Result result = ApacheHttpTool.httpGet(testUrl, header, params);
-        System.out.println(JSONObject.toJSON(result.getBody()));
-
-        String testUrl2 = "https://dingshi4pc.qiumibao.com/livetext/data/cache/livetext/776192/0/lit_page_2/%s.htm?get=0.6459999979004349";
-        header.put("authority", "dingshi4pc.qiumibao.com");
-        header.put("sec-ch-ua", "\"Google Chrome\";v=\"95\", \"Chromium\";v=\"95\", \";Not A Brand\";v=\"99\"");
-        header.put("accept", "application/json, text/javascript, */*; q=0.01");
-        header.put("sec-ch-ua-mobile", "?0");
-        header.put("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36");
-        header.put("sec-ch-ua-platform", "\"macOS\"");
-        header.put("origin", "https://www.zhibo8.cc");
-        header.put("sec-fetch-site", "cross-site");
-        header.put("sec-fetch-mode", "cors");
-        header.put("sec-fetch-dest", "empty");
-        header.put("referer", "https://www.zhibo8.cc/");
-        header.put("accept-language", "zh-CN,zh;q=0.9");
-        System.out.println(String.format(testUrl2, result.getBody()));
-        ApacheHttpTool.Result result2 = ApacheHttpTool.httpGet(String.format(testUrl2, result.getBody()), header, params);
-        System.out.println(JSONObject.toJSON(result2));
+//        String testUrl = "https://dingshi4pc.qiumibao.com/livetext/data/cache/max_sid/776192/0.htm?time=0.5625657025442139";
+//        Map<String, String> header = new HashMap<>();
+//        Map<String, String> params = new HashMap<>();
+//        ApacheHttpTool.Result result = ApacheHttpTool.httpGet(testUrl, header, params);
+//        System.out.println(JSONObject.toJSON(result.getBody()));
+//
+//        String testUrl2 = "https://dingshi4pc.qiumibao.com/livetext/data/cache/livetext/776192/0/lit_page_2/%s.htm?get=0.6459999979004349";
+//        header.put("authority", "dingshi4pc.qiumibao.com");
+//        header.put("sec-ch-ua", "\"Google Chrome\";v=\"95\", \"Chromium\";v=\"95\", \";Not A Brand\";v=\"99\"");
+//        header.put("accept", "application/json, text/javascript, */*; q=0.01");
+//        header.put("sec-ch-ua-mobile", "?0");
+//        header.put("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36");
+//        header.put("sec-ch-ua-platform", "\"macOS\"");
+//        header.put("origin", "https://www.zhibo8.cc");
+//        header.put("sec-fetch-site", "cross-site");
+//        header.put("sec-fetch-mode", "cors");
+//        header.put("sec-fetch-dest", "empty");
+//        header.put("referer", "https://www.zhibo8.cc/");
+//        header.put("accept-language", "zh-CN,zh;q=0.9");
+//        System.out.println(String.format(testUrl2, result.getBody()));
+//        ApacheHttpTool.Result result2 = ApacheHttpTool.httpGet(String.format(testUrl2, result.getBody()), header, params);
+//        System.out.println(JSONObject.toJSON(result2));
     }
 }

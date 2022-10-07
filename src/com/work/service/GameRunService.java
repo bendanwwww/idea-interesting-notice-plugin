@@ -1,6 +1,7 @@
 package com.work.service;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +14,7 @@ import com.intellij.notification.NotificationType;
 import com.intellij.openapi.project.Project;
 import com.work.common.GlobalContext;
 import com.work.external.BasketBallService;
+import com.work.vo.BallActionParam;
 import com.work.vo.GameLiveVO;
 
 /**
@@ -40,6 +42,10 @@ public class GameRunService extends RunServiceAbstract {
             if (StringUtils.isEmpty(runId)) {
                 continue;
             }
+            BallActionParam params = (BallActionParam) GlobalContext.getRunIdParam(runId);
+            if (Objects.isNull(params)) {
+                continue;
+            }
             StringBuffer textBuffer = new StringBuffer();
             try {
                 String gameLiveId = BasketBallService.getGameLiveNumber(runId);
@@ -54,8 +60,13 @@ public class GameRunService extends RunServiceAbstract {
                             textBuffer.append(gameLive.getLive_text());
                             textBuffer.append(" ");
                         }
+                        textBuffer.append("\r\n<br />");
+                        textBuffer.append(params.getHomeTeam());
+                        textBuffer.append(" ");
                         textBuffer.append(liveList.get(0).getHome_score());
                         textBuffer.append(" - ");
+                        textBuffer.append(params.getVisitTeam());
+                        textBuffer.append(" ");
                         textBuffer.append(liveList.get(0).getVisit_score());
                     }
                     lastGameLiveId = gameLiveId;

@@ -2,6 +2,7 @@ package com.work.action;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -13,6 +14,7 @@ import com.work.common.GlobalContext;
 import com.work.common.RunServiceFactory;
 import com.work.external.BasketBallService;
 import com.work.service.GameRunService;
+import com.work.vo.BallActionParam;
 import com.work.vo.GamesVO;
 
 /**
@@ -23,11 +25,11 @@ import com.work.vo.GamesVO;
  */
 public class BasketballAction extends ListPopupActionAbstract {
 
+    private static final Logger log = Logger.getInstance(BasketballAction.class);
+
     private static final String POPUP_TITLE = "请选择一场比赛";
     private static final String NO_GAME_TITLE = "当前无比赛";
     private static final String CLOSE_TASK = "停止播放";
-
-    private static final Logger log = Logger.getInstance(BasketballAction.class);
 
     private static GameRunService gameRunService = RunServiceFactory.getByClass(GameRunService.class);
 
@@ -57,12 +59,12 @@ public class BasketballAction extends ListPopupActionAbstract {
             // 生成列表
             for (GamesVO.Game g : gameList) {
                 String title = g.getHome_team() + "vs" + g.getVisit_team();
-                resMap.put(title, g.getId());
+                resMap.put(title, new BallActionParam(g.getId(), g.getHome_team(), g.getVisit_team()));
             }
         } else {
-            resMap.put(NO_GAME_TITLE, "");
+            resMap.put(NO_GAME_TITLE, new BallActionParam());
         }
-        resMap.put(CLOSE_TASK, "");
+        resMap.put(CLOSE_TASK, new BallActionParam());
         return resMap;
     }
 
@@ -73,11 +75,12 @@ public class BasketballAction extends ListPopupActionAbstract {
             gameRunService.stop();
             return;
         }
-        // 获取内容id
-        String id = String.valueOf(POPUP_MAP.get(selectedValue));
-        if (StringUtils.isNotEmpty(id)) {
+        // 获取跳转参数
+        BallActionParam params = (BallActionParam) POPUP_MAP.get(selectedValue);
+        if (Objects.nonNull(params)) {
             // 插入全局上下文中
-            GlobalContext.resetRunId(GameRunService.class, id);
+            GlobalContext.resetRunId(GameRunService.class, params.getId());
+            GlobalContext.setRunParam(params.getId(), params);
         }
     }
 }

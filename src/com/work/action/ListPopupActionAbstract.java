@@ -21,7 +21,7 @@ import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
 public abstract class ListPopupActionAbstract extends ActionAbstract {
 
     /** 列表集合 key: 列表名称 value: 跳转参数 */
-    public static final Map<String, Object> POPUP_MAP = new LinkedHashMap<>();
+    protected static final Map<String, Object> POPUP_MAP = new LinkedHashMap<>();
 
     /** 列表标题 */
     public abstract String getTitle();
@@ -37,7 +37,7 @@ public abstract class ListPopupActionAbstract extends ActionAbstract {
     @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
         // 刷新列表
-        refushPopupMap();
+        refreshPopupMap();
         Project project = event.getProject();
         begin(project);
         // 初始化菜单
@@ -54,7 +54,7 @@ public abstract class ListPopupActionAbstract extends ActionAbstract {
         after(project);
     }
 
-    private synchronized void refushPopupMap() {
+    private synchronized void refreshPopupMap() {
         POPUP_MAP.clear();
         POPUP_MAP.putAll(getPopupList());
     }
