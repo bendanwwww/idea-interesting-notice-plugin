@@ -6,7 +6,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
@@ -51,7 +50,7 @@ public class BasketballAction extends ListPopupActionAbstract {
         if (CollectionUtils.isNotEmpty(gameList)) {
             // 取出篮球且存在直播的比赛
             gameList = gameList.stream()
-                    .filter(g -> (g.getFrom().equals("live.dc") || g.getFrom().equals("live.live") || g.getFrom().equals("dc.live"))
+                    .filter(g -> (g.getFrom().contains("live.dc") || g.getFrom().contains("live.live") || g.getFrom().contains("dc.live"))
                             && g.getType().equals("basketball"))
                     .collect(Collectors.toList());
         }
