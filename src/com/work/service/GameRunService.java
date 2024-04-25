@@ -1,5 +1,6 @@
 package com.work.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -52,13 +53,21 @@ public class GameRunService extends RunServiceAbstract {
                 if (StringUtils.isNotEmpty(gameLiveId) && !gameLiveId.equals(lastGameLiveId)) {
                     List<GameLiveVO> liveList = BasketBallService.getGameLiveText(runId, gameLiveId);
                     if (CollectionUtils.isNotEmpty(liveList)) {
-                        textBuffer.append("[");
+                        textBuffer.append("<html>[");
                         textBuffer.append(liveList.get(0).getPid_text());
                         textBuffer.append("]");
                         textBuffer.append(" ");
+                        List<String> imgUrls = new ArrayList<>();
                         for (GameLiveVO gameLive : liveList) {
                             textBuffer.append(gameLive.getLive_text());
                             textBuffer.append(" ");
+                            if (StringUtils.isNotBlank(gameLive.getImg_url())) {
+                                imgUrls.add(gameLive.getImg_url());
+                            }
+                        }
+                        for (String imgUrl : imgUrls) {
+                            textBuffer.append("\r\n<br />");
+                            textBuffer.append("<img style='width:50px;' src='"+ imgUrl +"'>");
                         }
                         textBuffer.append("\r\n<br />");
                         textBuffer.append(params.getHomeTeam());
@@ -68,6 +77,7 @@ public class GameRunService extends RunServiceAbstract {
                         textBuffer.append(params.getVisitTeam());
                         textBuffer.append(" ");
                         textBuffer.append(liveList.get(0).getVisit_score());
+                        textBuffer.append("</html>");
                     }
                     lastGameLiveId = gameLiveId;
                 }
